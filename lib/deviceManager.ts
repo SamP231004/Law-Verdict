@@ -16,7 +16,7 @@ export interface DeviceConflict {
   deviceCount?: number;
 }
 
-const MAX_DEVICES = parseInt(process.env.MAX_DEVICES || '3');
+const MAX_DEVICES = Number(process.env.MAX_DEVICES) || 3;
 
 export async function checkDeviceLimit(userId: string, currentDeviceId: string): Promise<DeviceConflict> {
   const db = await getDatabase();
