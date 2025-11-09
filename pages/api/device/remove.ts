@@ -9,22 +9,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const session = await getSession(req, res);
-
     if (!session || !session.user) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
     const userId = session.user.sub;
     const { deviceId } = req.body;
-
     if (!deviceId) {
       return res.status(400).json({ error: 'Device ID required' });
     }
 
     await removeDeviceSession(userId, deviceId);
-
     return res.json({ success: true });
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Device removal error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }

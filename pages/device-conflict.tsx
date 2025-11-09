@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
-import { Smartphone, Monitor, AlertTriangle, LogOut, CheckCircle } from 'lucide-react';
+import { Smartphone, Monitor, AlertTriangle, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import toast from 'react-hot-toast';
-import { getStoredDeviceId } from '@/lib/deviceManager';
+import { ensureDeviceId } from '@/lib/deviceClient';
 
 interface Device {
   _id: string;
@@ -28,7 +28,7 @@ export default function DeviceConflict() {
 
   const checkDevices = async () => {
     try {
-      const deviceId = getStoredDeviceId();
+      const deviceId = ensureDeviceId();
       const response = await fetch('/api/device/check', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -40,14 +40,20 @@ export default function DeviceConflict() {
 
         if (data.hasConflict && data.existingDevices) {
           setDevices(data.existingDevices);
-        } else {
+        } 
+        else {
           router.push('/profile-setup');
         }
+      } 
+      else {
+        toast.error('Failed to check devices');
       }
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error checking devices:', error);
       toast.error('Failed to check devices');
-    } finally {
+    } 
+    finally {
       setLoading(false);
     }
   };
@@ -65,7 +71,7 @@ export default function DeviceConflict() {
         throw new Error('Failed to remove device');
       }
 
-      const currentDeviceId = getStoredDeviceId();
+      const currentDeviceId = ensureDeviceId();
       const registerResponse = await fetch('/api/device/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -78,7 +84,8 @@ export default function DeviceConflict() {
 
       toast.success('Device disconnected successfully');
       router.push('/profile-setup');
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error forcing login:', error);
       toast.error('Failed to force login');
       setProcessing(false);
@@ -86,7 +93,8 @@ export default function DeviceConflict() {
   };
 
   const handleCancelLogin = () => {
-    window.location.href = '/api/auth/logout';
+    const base = process.env.NEXT_PUBLIC_AUTH0_BASE_URL || window.location.origin;
+    window.location.href = `${base.replace(/\/$/, '')}/api/auth/logout`;
   };
 
   const getDeviceIcon = (deviceName: string) => {

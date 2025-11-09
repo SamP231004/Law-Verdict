@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
-import { generateDeviceId, getStoredDeviceId, storeDeviceId, clearDeviceId } from '@/lib/deviceManager';
+import { ensureDeviceId, getStoredDeviceId, storeDeviceId, clearDeviceId } from '@/lib/deviceClient';
 import toast from 'react-hot-toast';
 
 const HEARTBEAT_INTERVAL = 30000;
@@ -13,12 +13,7 @@ export default function DeviceSessionManager({ children }: { children: React.Rea
   const deviceIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    let deviceId = getStoredDeviceId();
-
-    if (!deviceId) {
-      deviceId = generateDeviceId();
-      storeDeviceId(deviceId);
-    }
+    const deviceId = ensureDeviceId();
 
     deviceIdRef.current = deviceId;
 

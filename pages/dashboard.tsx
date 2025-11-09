@@ -53,23 +53,23 @@ export default function Dashboard() {
 
   if (isLoading || loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-teal-50">
         <Navbar />
         <div className="flex items-center justify-center h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-teal-50">
       <Navbar />
 
       <div className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
@@ -84,15 +84,15 @@ export default function Dashboard() {
 
             <div className="grid gap-6 md:grid-cols-2">
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -14 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 }}
+                transition={{ delay: 0.08 }}
               >
-                <Card className="shadow-lg border-0 hover:shadow-xl transition-shadow">
+                <Card className="shadow-2xl border-0 hover:shadow-2xl transition-shadow">
                   <CardHeader>
                     <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <User className="h-6 w-6 text-blue-600" />
+                      <div className="w-12 h-12 bg-gradient-to-br from-indigo-100 to-cyan-100 rounded-lg flex items-center justify-center">
+                        <User className="h-6 w-6 text-indigo-600" />
                       </div>
                       <div>
                         <CardTitle>Profile Information</CardTitle>
@@ -127,14 +127,14 @@ export default function Dashboard() {
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 14 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
+                transition={{ delay: 0.12 }}
               >
-                <Card className="shadow-lg border-0 hover:shadow-xl transition-shadow">
+                <Card className="shadow-2xl border-0 hover:shadow-2xl transition-shadow">
                   <CardHeader>
                     <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-teal-100 rounded-lg flex items-center justify-center">
                         <Shield className="h-6 w-6 text-green-600" />
                       </div>
                       <div>

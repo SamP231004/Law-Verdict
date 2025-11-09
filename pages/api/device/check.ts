@@ -11,27 +11,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const userId = session.user.sub;
-    const { deviceId } = req.body;
 
+    const { deviceId } = req.body;
     if (!deviceId) {
       return res.status(400).json({ error: 'Device ID required' });
     }
 
     const isActive = await isDeviceActive(userId, deviceId);
-
     if (!isActive) {
       return res.json({ isActive: false, forceLogout: true });
     }
 
     const conflict = await checkDeviceLimit(userId, deviceId);
-
     return res.json({
       isActive: true,
       hasConflict: conflict.hasConflict,
       existingDevices: conflict.existingDevices,
       deviceCount: conflict.deviceCount,
     });
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('Device check error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }

@@ -17,7 +17,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const userId = session.user.sub;
     const { deviceId } = req.body;
     const userAgent = req.headers['user-agent'] || 'Unknown';
-
     if (!deviceId) {
       return res.status(400).json({ error: 'Device ID required' });
     }
@@ -30,7 +29,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
 
     return res.json({ success: true });
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Device registration error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }

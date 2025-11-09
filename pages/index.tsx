@@ -26,6 +26,22 @@ export default function Home() {
     check();
   }, []);
 
+  function RenderLoginCTA({ label }: { label: string }) {
+    return (
+      <Link href="/api/auth/login">
+        <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+          <Button
+            size="lg"
+            className="bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-700 hover:to-cyan-600 text-lg px-8 py-6 shadow-lg transform hover:-translate-y-0.5"
+          >
+            {label}
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+        </motion.div>
+      </Link>
+    );
+  }
+
   const features = [
     {
       icon: Shield,
@@ -45,24 +61,23 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-teal-50">
       <Navbar />
-
       <main className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center space-y-8"
           >
             <div className="space-y-4">
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2 }}
+                initial={{ scale: 0.85, rotate: -6 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.15, duration: 0.5 }}
                 className="inline-block"
               >
-                <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                <div className="w-20 h-20 bg-gradient-to-tr from-violet-700 to-indigo-500 rounded-2xl flex items-center justify-center mx-auto shadow-2xl">
                   <Shield className="h-10 w-10 text-white" />
                 </div>
               </motion.div>
@@ -70,7 +85,7 @@ export default function Home() {
               <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
                 Secure Device
                 <br />
-                <span className="text-blue-600">Authentication</span>
+                <span className="text-indigo-600">Authentication</span>
               </h1>
 
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -82,23 +97,18 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 0.3 }}
               className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
               {user ? (
                 <Link href="/dashboard">
-                  <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6">
+                  <Button size="lg" className="bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-700 hover:to-cyan-600 text-lg px-8 py-6 shadow-lg transform hover:-translate-y-0.5">
                     Go to Dashboard
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
               ) : (
-                <a href="/api/auth/login">
-                  <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6">
-                    Get Started
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </a>
+                <RenderLoginCTA label="Get Started" />
               )}
             </motion.div>
 
@@ -115,10 +125,10 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7 + index * 0.1 }}
                 >
-                  <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow h-full">
-                    <CardContent className="p-6 space-y-4">
-                      <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center">
-                        <feature.icon className="h-7 w-7 text-blue-600" />
+                  <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow h-full flex flex-col items-center justify-center text-center">
+                    <CardContent className="p-6 space-y-4 flex flex-col items-center justify-center">
+                      <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center">
+                        <feature.icon className="h-8 w-8 text-blue-600" />
                       </div>
                       <h3 className="text-xl font-bold text-gray-900">{feature.title}</h3>
                       <p className="text-gray-600">{feature.description}</p>

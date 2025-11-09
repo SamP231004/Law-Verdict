@@ -3,14 +3,28 @@ import type { AppProps } from 'next/app';
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import { Toaster } from 'react-hot-toast';
 import DeviceSessionManager from '@/components/DeviceSessionManager';
-import Script from 'next/script'
+import { AnimatePresence, motion } from 'framer-motion';
+import { useRouter } from 'next/router';
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+
   return (
     <UserProvider>
-      <Script src="http://localhost:3000/script.js" data-website-id="2a6cd30e-df8c-4117-9f5e-08e4cd8a3ee5" />
       <DeviceSessionManager>
-        <Component {...pageProps} />
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.main
+            key={router.asPath}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+            className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50"
+          >
+            <Component {...pageProps} />
+          </motion.main>
+        </AnimatePresence>
+
         <Toaster
           position="top-right"
           toastOptions={{

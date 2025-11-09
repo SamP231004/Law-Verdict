@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import toast from 'react-hot-toast';
-import { getStoredDeviceId } from '@/lib/deviceManager';
+import { ensureDeviceId, getStoredDeviceId } from '@/lib/deviceClient';
 
 export default function ProfileSetup() {
   const router = useRouter();
@@ -37,23 +37,27 @@ export default function ProfileSetup() {
       if (response.ok) {
         const data = await response.json();
         if (data.profile && data.profile.fullName && data.profile.phoneNumber) {
-          await registerDevice();
+          const deviceId = ensureDeviceId();
+          await registerDevice(deviceId);
           router.push('/dashboard');
+          return;
         }
       }
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error checking profile:', error);
-    } finally {
+    } 
+    finally {
       setCheckingProfile(false);
     }
   };
 
-  const registerDevice = async () => {
-    const deviceId = getStoredDeviceId();
+  const registerDevice = async (deviceId?: string) => {
+    const id = deviceId ?? getStoredDeviceId() ?? ensureDeviceId();
     await fetch('/api/device/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ deviceId }),
+      body: JSON.stringify({ deviceId: id }),
     });
   };
 
@@ -83,11 +87,13 @@ export default function ProfileSetup() {
         throw new Error('Failed to save profile');
       }
 
-      await registerDevice();
+      const deviceId = ensureDeviceId();
+      await registerDevice(deviceId);
 
       toast.success('Profile setup complete!');
       router.push('/dashboard');
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error saving profile:', error);
       toast.error('Failed to save profile');
       setLoading(false);

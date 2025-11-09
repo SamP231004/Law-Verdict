@@ -1,5 +1,4 @@
 import { getDatabase } from './mongodb';
-import { v4 as uuidv4 } from 'uuid';
 
 export interface DeviceSession {
   userId: string;
@@ -22,22 +21,43 @@ export async function checkDeviceLimit(userId: string, currentDeviceId: string):
   const db = await getDatabase();
   const sessions = db.collection<DeviceSession>('device_sessions');
 
+  // total active sessions for user
+  const totalCount = await sessions.countDocuments({ userId });
+
+  // is current device already registered?
+  const hasCurrent = await sessions.findOne({ userId, deviceId: currentDeviceId });
+
+  // Find other devices (exclude current), newest first, limit for UI
   const existingDevices = await sessions
     .find({ userId, deviceId: { $ne: currentDeviceId } })
     .sort({ lastActive: -1 })
+    .limit(MAX_DEVICES)
     .toArray();
 
-  if (existingDevices.length >= MAX_DEVICES) {
+  // If total sessions is already below limit -> no conflict
+  if (totalCount < MAX_DEVICES) {
     return {
-      hasConflict: true,
+      hasConflict: false,
       existingDevices,
-      deviceCount: existingDevices.length
+      deviceCount: totalCount
     };
   }
 
+  // totalCount >= MAX_DEVICES
+  // If current device is already one of the registered sessions -> allow (no conflict)
+  if (hasCurrent) {
+    return {
+      hasConflict: false,
+      existingDevices,
+      deviceCount: totalCount
+    };
+  }
+
+  // Otherwise adding current device would exceed limit -> conflict
   return {
-    hasConflict: false,
-    deviceCount: existingDevices.length
+    hasConflict: true,
+    existingDevices,
+    deviceCount: totalCount
   };
 }
 
@@ -105,7 +125,7 @@ export async function isDeviceActive(userId: string, deviceId: string): Promise<
 }
 
 function getDeviceName(userAgent: string): string {
-  const ua = userAgent.toLowerCase();
+  const ua = (userAgent || '').toLowerCase();
 
   if (ua.includes('mobile') || ua.includes('android') || ua.includes('iphone')) {
     if (ua.includes('iphone')) return 'iPhone';
@@ -119,23 +139,4 @@ function getDeviceName(userAgent: string): string {
   if (ua.includes('linux')) return 'Linux PC';
 
   return 'Unknown Device';
-}
-
-export function generateDeviceId(): string {
-  return uuidv4();
-}
-
-export function getStoredDeviceId(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem('deviceId');
-}
-
-export function storeDeviceId(deviceId: string): void {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem('deviceId', deviceId);
-}
-
-export function clearDeviceId(): void {
-  if (typeof window === 'undefined') return;
-  localStorage.removeItem('deviceId');
 }

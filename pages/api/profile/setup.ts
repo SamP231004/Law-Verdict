@@ -35,7 +35,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     return res.status(405).json({ error: 'Method not allowed' });
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('Profile setup error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
