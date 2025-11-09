@@ -3,10 +3,12 @@ import type { AppProps } from 'next/app';
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import { Toaster } from 'react-hot-toast';
 import DeviceSessionManager from '@/components/DeviceSessionManager';
+import Script from 'next/script'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <UserProvider>
+      <Script src="http://localhost:3000/script.js" data-website-id="2a6cd30e-df8c-4117-9f5e-08e4cd8a3ee5" />
       <DeviceSessionManager>
         <Component {...pageProps} />
         <Toaster
